@@ -10,13 +10,23 @@ module.exports.templateTags = [
         displayName: 'Choose File',
         type: 'file',
       },
+      {
+        displayName: 'Escape JSON String',
+        type: 'boolean',
+      },
     ],
-    run(context, path) {
+    run(context, path, escape) {
       if (!path) {
         throw new Error('No file selected');
       }
 
-      return fs.readFileSync(path, 'utf8');
+      const content = fs.readFileSync(path, 'utf8');
+      if (escape) {
+        content = content.replaceAll('"', '\"');
+        content = content.replaceAll('\n', '\\n');
+      }
+
+      return content;
     },
   },
 ];
